@@ -21,6 +21,6 @@ void rotate(vector<int>& nums, int k) {
 
 int main() {
     vector<int> nums = {1, 2, 3, 4, 5};
-    rotate(nums, 18);
-    for(auto i: nums) cout << i << endl;
+    rotate(nums, 6);
+    for(auto i: nums) cout << i;
 }
