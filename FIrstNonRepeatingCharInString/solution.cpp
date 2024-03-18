@@ -8,6 +8,11 @@ public:
     int firstUniqChar(string s) {
         unordered_map<char, int> occurrenceMap; //char, freq
         
+        /* 
+        We could have also used vector of length 26 to store freq 
+        i.e for (i; i<s.size(); i++ ) 
+        ans[s[i] - 'a'] ++ 
+         */
         for (auto i : s) {
             if (occurrenceMap.find(i) == occurrenceMap.end()) {
                 occurrenceMap[i] = 1;
