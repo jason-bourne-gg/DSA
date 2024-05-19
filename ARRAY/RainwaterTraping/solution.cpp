@@ -33,20 +33,25 @@ public:
     O(n) time and O(n) space
      */
 
-    int trap(std::vector<int>& height) {
-        int i = 0, left_max = height[0], sum = 0;
-        int j = height.size() - 1, right_max = height[j];
-        while (i < j) {
-            if (left_max <= right_max) {
-                sum += (left_max - height[i]);
-                i++;
-                left_max = std::max(left_max, height[i]);
-            } else {
-                sum += (right_max - height[j]);
-                j--;
-                right_max = std::max(right_max, height[j]);
+int trap(vector<int>& height) {
+        int n=height.size();
+        int left=0,right=n-1;
+        int left_max=0,right_max=0; 
+        int ans=0;
+
+        while(left<right){
+            if(height[left]<height[right]){
+                if(height[left]>left_max) left_max=height[left];
+                else ans+= left_max-height[left];
+                left++;
+            }
+            else{
+                if(height[right]>right_max) right_max=height[right];
+                else ans+= right_max-height[right];
+                right--;
             }
         }
-        return sum;
+
+        return ans;
     }
 };
