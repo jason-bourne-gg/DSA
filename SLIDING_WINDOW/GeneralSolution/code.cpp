@@ -14,8 +14,7 @@ int minSubArrayLen(int target, vector<int>& nums) {
                     mini = min(mini,j-i+1);
                     j++;
                 }else{
-                    while(sum>=target){
-                        mini = min(mini,j-i+1);
+                    while(sum=target){
                         sum = sum-nums[i];
                         i++;
                     }
