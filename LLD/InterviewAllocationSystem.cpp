@@ -17,7 +17,10 @@ private:
     string interviewType;
 
 public:
-    InterviewType(int id, const string &type) : id(id), interviewType(type) {}
+    InterviewType(int id, const string &type) : id(id), interviewType(type) {} // 'type' is not modified
+
+    int getId() const { return id; }                 // Member function doesn't modify the object
+    string getType() const { return interviewType; } // Member function doesn't modify the object
 };
 
 // Time Slot class
@@ -29,9 +32,11 @@ private:
     string endTime;
 
 public:
-    TimeSlot(int id, const string &startTime, const string &endTime) : id(id), startTime(startTime), endTime(endTime) {}
+    TimeSlot(int id, const string &startTime, const string &endTime) : id(id), startTime(startTime), endTime(endTime) {} // 'startTime' and 'endTime' are not modified
 
-    friend class InterviewAllocationSystem;
+    int getId() const { return id; }                  // Member function doesn't modify the object
+    string getStartTime() const { return startTime; } // Member function doesn't modify the object
+    string getEndTime() const { return endTime; }     // Member function doesn't modify the object
 };
 
 // Users class
@@ -48,7 +53,13 @@ public:
     User(int id, const string &name, const string &role,
          const unordered_set<int> &preferredSlots,
          const unordered_set<int> &preferredInterviewTypes)
-        : id(id), name(name), role(role), preferredSlots(preferredSlots), preferredInterviewTypes(preferredInterviewTypes) {}
+        : id(id), name(name), role(role), preferredSlots(preferredSlots), preferredInterviewTypes(preferredInterviewTypes) {} // Parameters are not modified
+
+    int getId() const { return id; }                                                                 // Member function doesn't modify the object
+    string getName() const { return name; }                                                          // Member function doesn't modify the object
+    string getRole() const { return role; }                                                          // Member function doesn't modify the object
+    const unordered_set<int> &getPreferredSlots() const { return preferredSlots; }                   // Returns a reference that shouldn't be modified
+    const unordered_set<int> &getPreferredInterviewTypes() const { return preferredInterviewTypes; } // Returns a reference that shouldn't be modified
 
     friend class InterviewAllocationSystem; // Allowing InterviewAllocationSystem to access private members
 };
@@ -59,11 +70,11 @@ class InterviewAssignment
 public:
     int interviewerId;
     int intervieweeId;
-    int timeSlotId;
-    int interviewTypeId;
+    TimeSlot timeSlot;
+    InterviewType interviewType;
 
-    InterviewAssignment(int interviewerId, int intervieweeId, int timeSlotId, int interviewTypeId)
-        : interviewerId(interviewerId), intervieweeId(intervieweeId), timeSlotId(timeSlotId), interviewTypeId(interviewTypeId) {}
+    InterviewAssignment(int interviewerId, int intervieweeId, const TimeSlot &timeSlot, const InterviewType &interviewType)
+        : interviewerId(interviewerId), intervieweeId(intervieweeId), timeSlot(timeSlot), interviewType(interviewType) {} // Parameters are not modified
 };
 
 // Singleton class for Interview Allocation System
@@ -86,17 +97,17 @@ public:
 
     void registerUser(const User &user)
     {
-        users.push_back(user);
+        users.push_back(user); // 'user' is not modified
     }
 
     void addTimeSlot(const TimeSlot &timeSlot)
     {
-        timeSlots.push_back(timeSlot);
+        timeSlots.push_back(timeSlot); // 'timeSlot' is not modified
     }
 
     void addInterviewType(const InterviewType &type)
     {
-        interviewTypes.push_back(type);
+        interviewTypes.push_back(type); // 'type' is not modified
     }
 
     void allocateInterviews()
@@ -136,41 +147,45 @@ public:
 
                 if (!commonSlots.empty() && !commonInterviewTypes.empty())
                 {
-                    int slot = *commonSlots.begin();
-                    int type = *commonInterviewTypes.begin();
-                    assignments.emplace_back(interviewer.id, interviewee.id, slot, type);
+                    int slotId = *commonSlots.begin();
+                    int typeId = *commonInterviewTypes.begin();
+
+                    TimeSlot selectedSlot(0, "", "");
+                    for (const auto &slot : timeSlots)
+                    {
+                        if (slot.getId() == slotId)
+                        {
+                            selectedSlot = slot;
+                            break;
+                        }
+                    }
+
+                    InterviewType selectedType(0, "");
+                    for (const auto &type : interviewTypes)
+                    {
+                        if (type.getId() == typeId)
+                        {
+                            selectedType = type;
+                            break;
+                        }
+                    }
+
+                    assignments.emplace_back(interviewer.getId(), interviewee.getId(), selectedSlot, selectedType);
                     break;
                 }
             }
         }
     }
 
-    void handleInvalidSlot(int slotId)
-    {
-        bool valid = false;
-        for (auto &slot : timeSlots)
-        {
-            if (slot.id == slotId)
-            {
-                valid = true;
-                break;
-            }
-        }
-        if (!valid)
-        {
-            throw invalid_argument("Invalid slot ID: " + to_string(slotId));
-        }
-    }
-
     // Method to print interview assignments
-    void printAssignments()
-    {
-        for (auto &assignment : assignments)
+    void printAssignments() const
+    { // Member function doesn't modify the object
+        for (const auto &assignment : assignments)
         {
             cout << "Interviewer ID: " << assignment.interviewerId
                  << ", Interviewee ID: " << assignment.intervieweeId
-                 << ", Time Slot ID: " << assignment.timeSlotId
-                 << ", Interview Type ID: " << assignment.interviewTypeId << endl;
+                 << ", Time Slot: " << assignment.timeSlot.getStartTime() << " to " << assignment.timeSlot.getEndTime()
+                 << ", Interview Type: " << assignment.interviewType.getType() << endl;
         }
     }
 
@@ -201,16 +216,6 @@ int main()
 
     // Print interview assignments
     system.printAssignments();
-
-    // Handle invalid slot
-    try
-    {
-        system.handleInvalidSlot(9);
-    }
-    catch (const invalid_argument &e)
-    {
-        cerr << e.what() << endl;
-    }
 
     return 0;
 }
