@@ -12,6 +12,10 @@ public:
         int n = board[0].size();
         int countLive = 0;
 
+        /*
+        2 for a live cell that becomes dead.
+        3 for a dead cell that becomes alive.
+        */
         // Directions for the 8 neighboring cells
         vector<pair<int, int>> directions = {
             {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
