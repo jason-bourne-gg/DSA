@@ -18,3 +18,20 @@ Explanation: Traversing all nodes and edges in the worst case, plus additional o
 Space Complexity:
 
 Both Graphs: O(N) (vis + recursion stack)
+
+
+
+
+THINK !!!
+if (i == 0 || i == n - 1 || j == 0 ||
+    j == m - 1 && !vis[i][j] && board[i][j] == 'O') {
+    cout << i << j << endl;
+    dfs(i, j, board, vis);
+}
+This condition is meant to identify the boundary cells (i == 0 || i == n - 1 || j == 0 || j == m - 1) that should initiate the DFS. However, the operator precedence is causing unintended behavior because && has higher precedence than ||. Therefore, the condition is being evaluated as:
+
+if (i == 0 || i == n - 1 || j == 0 ||
+    (j == m - 1 && !vis[i][j] && board[i][j] == 'O')) {
+    cout << i << j << endl;
+    dfs(i, j, board, vis);
+}

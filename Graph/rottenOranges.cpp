@@ -44,7 +44,7 @@ public:
                 for (auto [dx, dy] : dir)
                 {
                     int newnodei = nodei + dx;
-                    int newnodej = nodei + dy;
+                    int newnodej = nodej + dy;
 
                     if (newnodei < rows && newnodei >= 0 && newnodej < cols && newnodej >= 0 && adj[newnodei][newnodej] == 1)
                     {
@@ -59,10 +59,7 @@ public:
             if (freshRotten)
                 minutes++;
         }
-        if (freshCount != 0)
-            return -1;
-
-        return minutes;
+        return freshCount ? -1 : minutes;
     }
 };
 
