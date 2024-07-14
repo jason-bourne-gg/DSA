@@ -1,0 +1,20 @@
+BFS (Breadth-First Search)
+
+Time Complexity:
+
+Undirected Graphs: O(N + 2 * E) (N = number of nodes, E = number of edges)
+Directed Graphs: O(N + E)
+Explanation: Traversing all nodes and edges in the worst case.
+Space Complexity:
+
+Both Graphs: O(N) (vis + queue)
+DFS (Depth-First Search)
+
+Time Complexity:
+
+Undirected Graphs: O(N + 2 * E) + O(N) (for recursion stack)
+Directed Graphs: O(N + E)
+Explanation: Traversing all nodes and edges in the worst case, plus additional overhead for recursion.
+Space Complexity:
+
+Both Graphs: O(N) (vis + recursion stack)
