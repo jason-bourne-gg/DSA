@@ -10,7 +10,7 @@ private:
     bool hasCycle(int node, unordered_map<int, vector<int>> &mp, vector<int> &visited, vector<int> &ans)
     {
         if (visited[node] == 1)
-            return true; // node is being visited, so we have a cycle
+            return true; // visited node is being visited again, so we have a cycle
         if (visited[node] == 2)
             return false; // node has been fully processed and no cycle was found
 
@@ -22,8 +22,8 @@ private:
                 return true;
         }
 
-        visited[node] = 2; // mark the node as fully processed
-        ans.push_back(node);
+        visited[node] = 2;   // mark the node as fully processed
+        ans.push_back(node); // to store the path of traversal (in reverse though)
         return false;
     }
 
