@@ -4,8 +4,8 @@
 
 using namespace std;
 /* Intution behind using stack is..since the definition of
-topo sort is printing the nodes in such a way
- that if there is an edge from u to v the  u should always come before v ;
+topo sort is "LINEAR ordering of the nodes in such a way
+ that if there is an edge from u to v the  u should always come before v in that ordering".
  Hence, we store nodes whose DFS is completed in stack and just print them
  to get ONE of the possible solutions*/
 class Solution
