@@ -6,7 +6,7 @@ using namespace std;
 class Solution
 {
 private:
-    /* DFS for directed graph */
+    /* {Bonus code} DFS for directed graph */
     bool hasCycle(int node, unordered_map<int, vector<int>> &mp, vector<int> &visited, vector<int> &ans)
     {
         if (visited[node] == 1)
