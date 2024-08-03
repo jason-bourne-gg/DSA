@@ -73,3 +73,36 @@ int main()
 
     return 0;
 }
+
+/*
+class Solution {
+private:
+    bool solve(int idx, string& s, unordered_set<string>& st, vector<int>&dp) {
+        if (idx == s.size())
+            return true;
+        if (dp[idx] != -1)
+            return dp[idx];
+        if (st.find(s) != st.end())
+            return dp[idx] = true;
+
+        for (int l = 1; l <= s.size(); l++) {
+            // l = length of substr infront of idx
+            string temp = s.substr(idx, l);
+
+            if (st.find(temp) != st.end() && solve(idx + l, s, st, dp))
+                return dp[idx] = true;
+        }
+
+        return dp[idx] = false;
+    }
+
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int n = s.size();
+        vector<int> dp(n + 1, -1);
+        unordered_set<string> st(wordDict.begin(), wordDict.end());
+        return solve(0, s, st, dp);
+    }
+};
+
+*/
