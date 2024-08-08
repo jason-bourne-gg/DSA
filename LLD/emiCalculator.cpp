@@ -117,7 +117,7 @@ int main()
     Loan loan(loanAmount, interestRate, tenure);
 
     EMICalculator *calculator;
-    if (strategy == 1)
+    if (strategy == 2)
     {
         NormalStrategy normalStrategy;
         calculator = new EMICalculator(&normalStrategy);
