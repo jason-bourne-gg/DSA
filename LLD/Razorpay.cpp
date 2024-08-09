@@ -3,6 +3,8 @@
 #include <vector>
 #include <set>
 #include <sstream>
+#include <unordered_map>
+#include <algorithm>
 using namespace std;
 
 class Document
@@ -12,21 +14,20 @@ private:
     string content;
 
 public:
-    string getContent()
+    string getContent() const
     {
         return content;
     }
 
-    int getDocId()
+    int getDocId() const
     {
         return docId;
     }
 
-    void storeContent(int id, string data)
+    void storeContent(int id, const string &data)
     {
         docId = id;
         content = data;
-        return;
     }
 };
 
@@ -38,30 +39,32 @@ private:
 public:
     Dataset() : dataset() {}
 
-    vector<string> getAllDocs()
+    vector<string> getAllDocs() const
     {
         vector<string> resultSet;
-        for (auto it : dataset)
+        for (const auto &it : dataset)
         {
-            string temp = it.second.getContent();
-            resultSet.push_back(temp);
+            resultSet.push_back(it.second.getContent());
         }
         return resultSet;
     }
 
-    string storeDocument(int id, string data)
+    string storeDocument(int id, const string &data)
     {
         if (dataset.count(id) > 0)
         {
-            return "Document ID already exist";
+            return "Document ID already exists";
         }
 
         Document tempDoc;
         tempDoc.storeContent(id, data);
-
-        // if not then sore in dataset
         dataset[id] = tempDoc;
         return "Document stored successfully";
+    }
+
+    const unordered_map<int, Document> &getDataset() const
+    {
+        return dataset;
     }
 };
 
@@ -71,7 +74,7 @@ private:
     unordered_map<string, set<int>> search_space;
 
 public:
-    void indexDoc(Document &doc)
+    void indexDoc(const Document &doc)
     {
         stringstream ss(doc.getContent());
         vector<string> v;
@@ -81,18 +84,13 @@ public:
             v.push_back(temp);
         }
 
-        for (auto it : v)
+        for (const auto &it : v)
         {
-            if (search_space.count(it) > 0)
-                search_space[it].insert(doc.getDocId());
-            else
-                search_space[it].insert(doc.getDocId());
+            search_space[it].insert(doc.getDocId());
         }
-
-        return;
     }
 
-    set<int> searchDoc(string searchStr)
+    set<int> searchDoc(const string &searchStr) const
     {
         stringstream ss(searchStr);
         vector<string> v;
@@ -102,17 +100,23 @@ public:
             v.push_back(temp);
         }
 
-        set<int> result = search_space[v[0]];
+        if (v.empty())
+            return {};
 
-        // if set result  = 0 return from here itself
+        set<int> result = search_space.count(v[0]) ? search_space.at(v[0]) : set<int>();
 
-        for (auto it : v)
+        for (const auto &it : v)
         {
             if (search_space.count(it) > 0)
             {
-                set_intersection(result.begin(), result.end(), search_space[it].begin(),
-                                 search_space[it].end(),
-                                 inserter(result, result.begin()));
+                set<int> tempSet;
+                set_intersection(result.begin(), result.end(), search_space.at(it).begin(), search_space.at(it).end(),
+                                 inserter(tempSet, tempSet.begin()));
+                result = move(tempSet);
+            }
+            else
+            {
+                return {};
             }
         }
 
@@ -126,29 +130,33 @@ int main()
 
     Dataset dataset;
     SearchHandler search;
-    cout << " Enter the dcocument 1" << endl;
-    cin >> doc1;
 
-    cout << " Enter the dcocument 2" << endl;
-    cin >> doc2;
+    cout << "Enter the document 1:" << endl;
+    getline(cin, doc1);
 
-    cout << " Enter the dcocument 3" << endl;
-    cin >> doc3;
+    cout << "Enter the document 2:" << endl;
+    getline(cin, doc2);
 
-    dataset.storeDocument(3, doc3);
-    search.indexDoc();
+    cout << "Enter the document 3:" << endl;
+    getline(cin, doc3);
+
     dataset.storeDocument(1, doc1);
     dataset.storeDocument(2, doc2);
+    dataset.storeDocument(3, doc3);
 
-    cout << " Enter the search string :" << endl;
-    cin >> searchString;
+    search.indexDoc(dataset.getDataset().at(1));
+    search.indexDoc(dataset.getDataset().at(2));
+    search.indexDoc(dataset.getDataset().at(3));
+
+    cout << "Enter the search string:" << endl;
+    getline(cin, searchString);
 
     set<int> s = search.searchDoc(searchString);
 
-    for (auto it : s)
+    for (const auto &it : s)
     {
         cout << it << endl;
     }
 
     return 0;
-};
+}
