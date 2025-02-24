@@ -13,6 +13,7 @@ The implementations in this repository are available in the following programmin
 - C++
 - Python
 - JavaScript
+- Ruby
 
 Choose the language of your preference to explore the implementations.
 
